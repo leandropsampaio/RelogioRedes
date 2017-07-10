@@ -9,12 +9,41 @@ import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.Random;
 
 /**
  *
  * @author Leandro Pereira Sampaio
  */
-public class Conexao {
+public class Conexao{
+
+    /**
+     * @return the eleicao
+     */
+    public boolean isEleicao() {
+        return eleicao;
+    }
+
+    /**
+     * @param eleicao the eleicao to set
+     */
+    public void setEleicao(boolean eleicao) {
+        this.eleicao = eleicao;
+    }
+
+    /**
+     * @return the msgRecebida
+     */
+    public boolean isMsgRecebida() {
+        return msgRecebida;
+    }
+
+    /**
+     * @param msgRecebida the msgRecebida to set
+     */
+    public void setMsgRecebida(boolean msgRecebida) {
+        this.msgRecebida = msgRecebida;
+    }
 
     private static Conexao Conexao;
     private final int PORTA = 5000;
@@ -22,6 +51,8 @@ public class Conexao {
     private MulticastSocket multicast;
     private String id;
     private String mestre;
+    private boolean msgRecebida;
+    private boolean eleicao;
 
     /**
      * Método que inicializa a classe.
@@ -46,6 +77,8 @@ public class Conexao {
     public void conectar() throws IOException {
         this.multicast = new MulticastSocket(this.PORTA);
         this.multicast.joinGroup(InetAddress.getByName(this.GRUPO));
+        this.eleicao = true;
+        this.msgRecebida = false;
         System.out.println("Conectou!");
         //this.multicast.setSoTimeout(2000);
     }
@@ -59,10 +92,7 @@ public class Conexao {
         this.multicast.close();
     }
 
-    /**
-     * Método que envia uma string para o grupo.
-     *
-     */
+
     public void enviar(String s) throws SocketException, UnknownHostException, IOException {
         DatagramSocket socket = new DatagramSocket();
         byte[] buf = s.getBytes();

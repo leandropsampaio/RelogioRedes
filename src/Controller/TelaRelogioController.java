@@ -23,6 +23,34 @@ import javax.swing.JLabel;
  */
 public class TelaRelogioController {
 
+    /**
+     * @return the hora
+     */
+    public Integer getHora() {
+        return hora;
+    }
+
+    /**
+     * @param hora the hora to set
+     */
+    public void setHora(Integer hora) {
+        this.hora = hora;
+    }
+
+    /**
+     * @return the contador
+     */
+    public Integer getContador() {
+        return contador;
+    }
+
+    /**
+     * @param contador the contador to set
+     */
+    public void setContador(Integer contador) {
+        this.contador = contador;
+    }
+
     private TextField fieldDrift;
     private JLabel labelAlteraMinuto;
     private JLabel labelHora;
@@ -62,9 +90,9 @@ public class TelaRelogioController {
 
                 //Condição de modificação da variável contadora:
                 if (fieldm.equals("0")) {
-                    contador = Integer.parseInt(fields);
+                    setContador((Integer) Integer.parseInt(fields));
                 } else {
-                    contador = (Integer.parseInt(fieldm) * 60) + Integer.parseInt(fields);
+                    setContador((Integer) (Integer.parseInt(fieldm) * 60) + Integer.parseInt(fields));
                 }
             }
         }
@@ -98,12 +126,12 @@ public class TelaRelogioController {
 
         this.contagem();   //Chama a tarefa
 
-        try {
-            System.out.println("AQUIIIIII!!!!!!!");
-            this.conexao.enviar("entrar;enviar;" + this.conexao.getId());
-        } catch (IOException ex) {
-            Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        try {
+//            System.out.println("AQUIIIIII!!!!!!!");
+//            this.conexao.enviar("entrar;enviar;" + this.conexao.getId());
+//        } catch (IOException ex) {
+//            Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         //this.contagem();   //Chama a tarefa
         ThreadReceber tr = new ThreadReceber(this);
@@ -124,32 +152,48 @@ public class TelaRelogioController {
                         Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
-                    contador++;   //Variável de controle do tempo
-                    segundo = contador % 60;
+                    setContador((Integer) (getContador() + 1));   //Variável de controle do tempo
+                    segundo = getContador() % 60;
                     labelSegundo.setText(segundo.toString());
-                    minuto = contador / 60;
+                    minuto = getContador() / 60;
 
                     if (minuto == 60) {
                         minuto = 0;
                     }
                     labelMinuto.setText(minuto.toString());
 
-                    if ((hora == 23) && (contador == 3600)) {   //Final do dia, reinicia toda contagem
-                        hora = 0;
-                        contador = 0;
+                    if ((getHora() == 23) && (getContador() == 3600)) {   //Final do dia, reinicia toda contagem
+                        setHora((Integer) 0);
+                        setContador((Integer) 0);
                     }
 
-                    if (contador == 3600) {   //Final da hora, incrementa a hora
-                        hora++;
-                        contador = 0;
+                    if (getContador() == 3600) {   //Final da hora, incrementa a hora
+                        setHora((Integer) (getHora() + 1));
+                        setContador((Integer) 0);
                     }
-                    labelHora.setText(hora.toString());
-
-                    if (conexao.getId().equals(conexao.getMestre())) {
-
+                    labelHora.setText(getHora().toString());
+                    
+                    
+                    System.out.println(conexao.getId());
+                    System.out.println(conexao.getMestre());
+                    if (conexao.isEleicao() && Integer.parseInt(conexao.getId()) != Integer.parseInt(conexao.getMestre())) {
+                        
+                                
+                                
                         try {
-                            conexao.enviar("enviaTempo;" + conexao.getId() + ";" + hora + ";" + contador);
+                                System.out.println("Bullyng");
+                                conexao.enviar("bullying;" + conexao.getId()+ ";"+ conexao.getMestre() + ";" + getContador());
+                                conexao.setMsgRecebida(true);
+                                Thread.sleep(1000);
+                                
+                                if(conexao.isMsgRecebida()){
+                                    System.out.println("Eleito");
+                                    conexao.enviar("eleicao1;" + conexao.getId() + ";"+ getContador());
+                                }
+                           
                         } catch (IOException ex) {
+                            Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InterruptedException ex) {
                             Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
@@ -159,8 +203,8 @@ public class TelaRelogioController {
     }
 
     public void atualizarTempo(Integer hora, Integer contador) {
-        this.hora = hora;
-        this.contador = contador;
+        this.setHora(hora);
+        this.setContador(contador);
         segundo = contador % 60;
         labelSegundo.setText(segundo.toString());
         minuto = contador / 60;

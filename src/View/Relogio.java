@@ -187,8 +187,9 @@ public class Relogio extends javax.swing.JFrame {
                 String id = JOptionPane.showInputDialog(null, "Id do relógio: ");
                 Conexao conexao = Conexao.getInstancia();
                 conexao.conectar();   //Conecta
-                conexao.setId(id);
-                conexao.setMestre(id);
+                conexao.setId(id); //Seta o id
+                System.out.println("Meu id é: " + id);
+                conexao.setMestre("9123213");
             }
         } catch (IOException ex) {
             Logger.getLogger(Relogio.class.getName()).log(Level.SEVERE, null, ex);
