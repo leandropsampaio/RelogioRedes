@@ -13,6 +13,13 @@ public class AtualizadorHorario extends Thread {
     private final JLabel hr; //label que guarda a hora atual
     private boolean pause; //
 
+    /**
+     * 
+     * 
+     * CLASSE NÃO UTILIZADA!
+     * 
+     * 
+     */
     public AtualizadorHorario(JLabel hora) {
         this.hr = hora;
     }

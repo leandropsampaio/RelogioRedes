@@ -1,16 +1,12 @@
 package View;
 
-import Controller.AtualizadorHorario;
 import Conexao.Conexao;
 import Controller.TelaRelogioController;
-import Controller.ThreadReceber;
 import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static javafx.application.Application.launch;
 import javax.swing.JOptionPane;
-import javax.swing.plaf.metal.MetalButtonUI;
 
 /**
  *
@@ -31,8 +27,8 @@ public class Relogio extends javax.swing.JFrame {
 
         setIcon();
         mostrarHora();
-        buttonPlay.setUI(new MetalButtonUI());
-        buttonPause.setUI(new MetalButtonUI());
+        //buttonPlay.setUI(new MetalButtonUI());
+        //buttonPause.setUI(new MetalButtonUI());
     }
 
     /**
@@ -44,80 +40,136 @@ public class Relogio extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        buttonPause = new javax.swing.JButton();
-        buttonPlay = new javax.swing.JButton();
+        buttonAlterarTempo = new javax.swing.JButton();
+        buttonSincronizar = new javax.swing.JButton();
         labelSegundo = new javax.swing.JLabel();
         labelMinuto = new javax.swing.JLabel();
         labelHora = new javax.swing.JLabel();
+        novoHorario = new javax.swing.JFormattedTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Relógio Sicronizado em Redes");
+        setTitle("Relógio Sincronizado em Redes");
 
-        buttonPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagens/icone_pause.png"))); // NOI18N
-        buttonPause.addActionListener(new java.awt.event.ActionListener() {
+        buttonAlterarTempo.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        buttonAlterarTempo.setText("Alterar Tempo");
+        buttonAlterarTempo.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        buttonAlterarTempo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonPauseActionPerformed(evt);
+                buttonAlterarTempoActionPerformed(evt);
             }
         });
 
-        buttonPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagens/icone_play.png"))); // NOI18N
-        buttonPlay.addActionListener(new java.awt.event.ActionListener() {
+        buttonSincronizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagens/icone_play.png"))); // NOI18N
+        buttonSincronizar.setText("Sincronizar");
+        buttonSincronizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonPlayActionPerformed(evt);
+                buttonSincronizarActionPerformed(evt);
             }
         });
 
-        labelSegundo.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        labelSegundo.setFont(new java.awt.Font("Tahoma", 1, 60)); // NOI18N
+        labelSegundo.setForeground(new java.awt.Color(255, 0, 0));
+        labelSegundo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelSegundo.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "s", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
 
-        labelMinuto.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        labelMinuto.setFont(new java.awt.Font("Tahoma", 1, 60)); // NOI18N
+        labelMinuto.setForeground(new java.awt.Color(255, 0, 0));
+        labelMinuto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelMinuto.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "min", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
 
-        labelHora.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        labelHora.setFont(new java.awt.Font("Tahoma", 1, 60)); // NOI18N
+        labelHora.setForeground(new java.awt.Color(255, 0, 0));
+        labelHora.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelHora.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "h", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.BOTTOM));
+
+        try {
+            novoHorario.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##:##:##")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        novoHorario.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        novoHorario.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 60)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel1.setText(":");
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 60)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText(":");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(172, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(buttonPause)
-                        .addGap(101, 101, 101)
-                        .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(288, 288, 288))
+                        .addComponent(buttonSincronizar)
+                        .addGap(289, 289, 289))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(labelHora, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40)
+                        .addComponent(labelHora, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labelMinuto, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(41, 41, 41)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel1)
+                        .addGap(10, 10, 10)
                         .addComponent(labelSegundo, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(241, 241, 241))))
+                        .addGap(166, 166, 166))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(272, 272, 272)
+                .addComponent(novoHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(buttonAlterarTempo, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(250, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSeparator1))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(100, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labelMinuto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelHora, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelSegundo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(78, 78, 78)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buttonPause)
-                    .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(21, 21, 21))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(68, 68, 68)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(labelMinuto, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                            .addComponent(labelHora, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                            .addComponent(labelSegundo, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(novoHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(buttonAlterarTempo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
+                .addComponent(buttonSincronizar, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void buttonPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPauseActionPerformed
-        pauseHorario(true);
-    }//GEN-LAST:event_buttonPauseActionPerformed
+    private void buttonAlterarTempoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonAlterarTempoActionPerformed
+        // Alterar o horário
+        controller.alterarTempo(novoHorario);
+    }//GEN-LAST:event_buttonAlterarTempoActionPerformed
 
-    private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
-        pauseHorario(false);
-    }//GEN-LAST:event_buttonPlayActionPerformed
+    private void buttonSincronizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSincronizarActionPerformed
+        // Sincronizar o horário
+    }//GEN-LAST:event_buttonSincronizarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -155,11 +207,15 @@ public class Relogio extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton buttonPause;
-    private javax.swing.JButton buttonPlay;
+    private javax.swing.JButton buttonAlterarTempo;
+    private javax.swing.JButton buttonSincronizar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel labelHora;
     private javax.swing.JLabel labelMinuto;
     private javax.swing.JLabel labelSegundo;
+    private javax.swing.JFormattedTextField novoHorario;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -173,10 +229,6 @@ public class Relogio extends javax.swing.JFrame {
     public void mostrarHora() {
         controller = new TelaRelogioController(labelHora, labelMinuto, labelSegundo);
         controller.iniciar();
-    }
-
-    private void pauseHorario(boolean pause) {
-        //controller.pausarHorario(pause);
     }
 
     private void iniciarConexao() {

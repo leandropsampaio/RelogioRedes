@@ -13,7 +13,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  * Classe controladora TelaRelogioController, responsável pela configuração dos
@@ -74,28 +76,37 @@ public class TelaRelogioController {
      *
      * @param event
      */
-    public void alterarTempo(ActionEvent event) {
-        String fieldh = labelAlteraHora.getText();
-        String fieldm = labelAlteraMinuto.getText();
-        String fields = labelAlteraSegundo.getText();
+    public void alterarTempo(JFormattedTextField novoHorario) {
+        System.out.println("NOVO HORÁRIO: " + novoHorario.getText());
+        String[] horario = novoHorario.getText().split(":");
+
+        String fieldh = horario[0];
+        String fieldm = horario[1];
+        String fields = horario[2];
 
         //Se houver tempo:
         if ((!(fieldh.equals(""))) && (!(fieldm.equals(""))) && (!(fields.equals("")))) {
 
             if ((!(fieldh.equals(" "))) && (!(fieldm.equals(" "))) && (!(fields.equals(" ")))) {
-                labelHora.setText(fieldh);
-                //hora = Integer.parseInt(fieldh);
-                labelMinuto.setText(fieldm);
-                labelSegundo.setText(fields);
 
-                //Condição de modificação da variável contadora:
-                if (fieldm.equals("0")) {
-                    setContador((Integer) Integer.parseInt(fields));
-                } else {
-                    setContador((Integer) (Integer.parseInt(fieldm) * 60) + Integer.parseInt(fields));
+                // Verificar horário
+                if (Integer.parseInt(fieldh) < 24 && Integer.parseInt(fieldm) < 60 && Integer.parseInt(fields) < 60) {
+                    labelHora.setText(fieldh);
+                    hora = Integer.parseInt(fieldh);
+                    labelMinuto.setText(fieldm);
+                    labelSegundo.setText(fields);
+
+                    //Condição de modificação da variável contadora:
+                    if (fieldm.equals("0")) {
+                        setContador((Integer) Integer.parseInt(fields));
+                    } else {
+                        setContador((Integer) (Integer.parseInt(fieldm) * 60) + Integer.parseInt(fields));
+                    }
                 }
             }
         }
+        
+        JOptionPane.showMessageDialog(labelMinuto, "Por gentileza, coloque um horário válido...");
     }
 
     /**
@@ -132,7 +143,6 @@ public class TelaRelogioController {
 //        } catch (IOException ex) {
 //            Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
 //        }
-
         //this.contagem();   //Chama a tarefa
         ThreadReceber tr = new ThreadReceber(this);
         new Thread(tr).start();
@@ -171,14 +181,11 @@ public class TelaRelogioController {
                         setContador((Integer) 0);
                     }
                     labelHora.setText(getHora().toString());
-                    
-                    
+
                     System.out.println(conexao.getId());
                     System.out.println(conexao.getMestre());
                     if (conexao.isEleicao() && Integer.parseInt(conexao.getId()) != Integer.parseInt(conexao.getMestre())) {
-                        
-                                
-                                
+
                         try {
                                 System.out.println("Bullyng");
                                 conexao.enviar("bullying;" + conexao.getId()+ ";"+ conexao.getMestre() + ";" + getContador());
@@ -189,7 +196,6 @@ public class TelaRelogioController {
                                     System.out.println("Eleito");
                                     conexao.enviar("eleicao1;" + conexao.getId() + ";"+ getContador());
                                 }
-                           
                         } catch (IOException ex) {
                             Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (InterruptedException ex) {
