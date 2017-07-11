@@ -4,6 +4,7 @@ import Conexao.Conexao;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -108,6 +109,21 @@ public class TelaRelogioController {
         
         JOptionPane.showMessageDialog(labelMinuto, "Por gentileza, coloque um horário válido...");
     }
+    
+    public void sincronizar(){
+           try {
+               if(conexao.getMestre().equals(conexao.getId())){
+                   conexao.enviar("sincronizar2;" + this.contador+ ";" + this.hora);
+               }
+               else{
+                   conexao.enviar("sincronizar1");
+               }
+           } catch (UnknownHostException ex) {
+               Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
+           } catch (IOException ex) {
+               Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
+           }
+    }
 
     /**
      * Método que libera o evento do botão de alterar drift, que modifica o
@@ -184,7 +200,7 @@ public class TelaRelogioController {
 
                     System.out.println(conexao.getId());
                     System.out.println(conexao.getMestre());
-                    if (conexao.isEleicao() && Integer.parseInt(conexao.getId()) != Integer.parseInt(conexao.getMestre())) {
+                    if (!conexao.getMestre().equals(conexao.getId())) {
 
                         try {
                                 System.out.println("Bullyng");

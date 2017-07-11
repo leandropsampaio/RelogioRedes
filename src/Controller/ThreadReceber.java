@@ -40,7 +40,7 @@ public class ThreadReceber implements Runnable {
                 }
                 //Recebendo msg de sincronização
                 if(comandos[0].equals("sincronizar2")){
-                    relogio.atualizarTempo(Integer.parseInt(comandos[1]), Integer.parseInt(comandos[2]));
+                    relogio.atualizarTempo(Integer.parseInt(comandos[2]), Integer.parseInt(comandos[1]));
                 }
 
                 //Bullynando o lider

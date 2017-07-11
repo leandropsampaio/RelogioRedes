@@ -169,6 +169,7 @@ public class Relogio extends javax.swing.JFrame {
 
     private void buttonSincronizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSincronizarActionPerformed
         // Sincronizar o horário
+        controller.sincronizar();
     }//GEN-LAST:event_buttonSincronizarActionPerformed
 
     /**
