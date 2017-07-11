@@ -144,7 +144,6 @@ public class TelaRelogioController {
             @Override
             public void run() {
                 while (true) {
-                    System.out.println("AAAAAAAAAa");
                     try {
                         //Contagem ilimitada
                         Thread.sleep(drift);   //No caso, correspondente ao tempo de drift
@@ -184,7 +183,7 @@ public class TelaRelogioController {
                                 System.out.println("Bullyng");
                                 conexao.enviar("bullying;" + conexao.getId()+ ";"+ conexao.getMestre() + ";" + getContador());
                                 conexao.setMsgRecebida(true);
-                                Thread.sleep(1000);
+                                Thread.sleep(5000);
                                 
                                 if(conexao.isMsgRecebida()){
                                     System.out.println("Eleito");
