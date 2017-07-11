@@ -200,7 +200,7 @@ public class TelaRelogioController {
 
                     System.out.println(conexao.getId());
                     System.out.println(conexao.getMestre());
-                    if (!conexao.getMestre().equals(conexao.getId())) {
+                    if (conexao.isEleicao() && !conexao.getMestre().equals(conexao.getId())) {
 
                         try {
                                 System.out.println("Bullyng");
