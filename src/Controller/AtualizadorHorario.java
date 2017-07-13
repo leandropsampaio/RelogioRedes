@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 public class AtualizadorHorario extends Thread {
 
     private final JLabel hr; //label que guarda a hora atual
-    private boolean pause; //
+    private boolean pause;
 
     /**
      * 

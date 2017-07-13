@@ -30,24 +30,44 @@ public class ThreadReceber implements Runnable {
           try {
                String[] comandos = conexao.receber().split(";");
                System.out.println(comandos[0]);
-               if(comandos.length>1){ //Não responde a mensagens de si mesmo
-                   if(!comandos[1].equals(conexao.getId())){
-               
-                    //Recebendo msg de sincronização
+                    //Não responde a mensagens de si mesmo
+                   if(comandos[1].equals(conexao.getId()) == false){
+                       
+                       
+                       //Enviar para o mestre pedido de sincronização
+                        if(comandos[0].equals("sincronizar1")){
+                             if(conexao.getMestre().equals(conexao.getId())){
+                                 conexao.enviar("sincronizar2;" + conexao.getId()+ ";"+ relogio.getContador() + ";" + relogio.getHora());
+                             }
+                         }
+                        //Recebendo msg de sincronização
                         if(comandos[0].equals("sincronizar2")){
-                            relogio.atualizarTempo(Integer.parseInt(comandos[2]), Integer.parseInt(comandos[1]));
+                            if(Integer.parseInt(comandos[2]) < conexao.getContMestre() || Integer.parseInt(comandos[2]) < relogio.getContador()){
+                               conexao.enviar("eleicao1;" + conexao.getId() + ";"+ relogio.getContador() + ";" + relogio.getHora()); 
+                               
+                            }
+                            else
+                            relogio.atualizarTempo(Integer.parseInt(comandos[3]), Integer.parseInt(comandos[2]));
                         }
+                        
 
+                        
+                        
+                        
                         //Bullynando o lider
                         if(comandos[0].equals("bullying")){
                             System.out.println("Bully");
                             if(comandos[2].equals(conexao.getId())){
-                                conexao.setMsgRecebida(true);
+                                conexao.enviar("msgrecebida;" + conexao.getId() + ";" + relogio.getContador() + ";" + relogio.getHora());
                                 System.out.println("Eu sou o líder");
                                 if(Integer.parseInt(comandos[3]) > relogio.getContador())
-                                    conexao.setLiderMenor(false);
+                                    conexao.enviar("lidermenor;" + conexao.getId());
                             }
                         }
+                        //Recebe msg do lider avisando que é necessário fazer uma nova eleição pois ele tem o horário menor
+                         if(comandos[0].equals("lidermenor")){
+                             conexao.setLiderMenor(true);
+                         }
 
                         //Alguem pediu eleição e enviou seu tempo para todos
                         if(comandos[0].equals("eleicao1")){
@@ -59,26 +79,28 @@ public class ThreadReceber implements Runnable {
                             if(Integer.parseInt(comandos[2]) > conexao.getContMestre()){ //Vê se a hora é maior que a sua
                                 conexao.setMestre(comandos[1]);
                             }
-                            conexao.enviar("eleicao2;" + conexao.getId() + ";" + relogio.getContador());
+                            conexao.enviar("eleicao2;" + conexao.getId() + ";" + relogio.getContador() + ";" + relogio.getHora());
                         }
                         if(comandos[0].equals("eleicao2")){
                             if(Integer.parseInt(comandos[2]) > conexao.getContMestre()){ //Vê se a hora é maior que a sua
                                 conexao.setMestre(comandos[1]);
                             }
-                            conexao.enviar("eleicaoFinal");
+                            conexao.enviar("eleicaoFinal;" + conexao.getId());
                         }
-                }
-            }//tamanho do comando <= 1
-                if(comandos[0].equals("eleicaoFinal")){
-                    System.out.println("O líder é o:" + conexao.getMestre());
-                    conexao.setEleicao(true);
-                }
-               //Enviar para o mestre pedido de sincronização
-                if(comandos[0].equals("sincronizar1")){
-                    if(conexao.getMestre().equals(conexao.getId())){
-                        conexao.enviar("sincronizar2;" + relogio.getContador() + ";" + relogio.getHora());
-                    }
-                }
+                        //Recebe msg do lider avisando que está td bem
+                        if(comandos[0].equals("msgrecebida")){
+                            conexao.setMsgRecebida(true);
+                            if(Integer.parseInt(comandos[2]) > relogio.getContador()){
+                                conexao.setMestre(comandos[1]);
+                                conexao.setContMestre(Integer.parseInt(comandos[2]));
+                            }
+                        }
+                        
+                        if(comandos[0].equals("eleicaoFinal")){
+                            System.out.println("O líder é o:" + conexao.getMestre());
+                            conexao.setEleicao(true);
+                        }
+                   }
                
                
           } catch (IOException ex) {

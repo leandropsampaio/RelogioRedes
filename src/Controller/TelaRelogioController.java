@@ -116,7 +116,7 @@ public class TelaRelogioController {
                    conexao.enviar("sincronizar2;" + this.contador+ ";" + this.hora);
                }
                else{
-                   conexao.enviar("sincronizar1");
+                   conexao.enviar("sincronizar1;" +conexao.getId());
                }
            } catch (UnknownHostException ex) {
                Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
@@ -211,7 +211,7 @@ public class TelaRelogioController {
                 while(true){
                     System.out.println(conexao.getId());
                         System.out.println(conexao.getMestre());
-                        if (conexao.isEleicao() && !conexao.getId().equals(conexao.getMestre())) {
+                        if (conexao.isEleicao()) {
 
                             try {
                                     System.out.println("Bullyng");
@@ -220,7 +220,8 @@ public class TelaRelogioController {
                                     conexao.enviar("bullying;" + conexao.getId()+ ";"+ conexao.getMestre() + ";" + getContador());
                                     Thread.sleep(1500);
 
-                                    if(conexao.isMsgRecebida() == false){ //Líder não recebeu a msg
+                                    if(conexao.isMsgRecebida() == false && conexao.getMestre().equals(conexao.getId()) == false){ //Líder não recebeu a msg
+                                        conexao.setContMestre(contador);
                                         System.out.println("Questionando o líder");
                                         conexao.enviar("eleicao1;" + conexao.getId() + ";"+ getContador());
                                     }
