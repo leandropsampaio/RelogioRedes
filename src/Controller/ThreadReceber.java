@@ -13,14 +13,15 @@ import java.util.logging.Logger;
 public class ThreadReceber implements Runnable {
 
     private TelaRelogioController relogio;
-    private boolean liderBuffer;
-    
 
     public ThreadReceber(TelaRelogioController relogio) {
         this.relogio = relogio;
     }
 
     @Override
+    /***
+     * Respostas aos protocolos recebidos
+     */
     public void run() {
         Conexao conexao = Conexao.getInstancia();
 
