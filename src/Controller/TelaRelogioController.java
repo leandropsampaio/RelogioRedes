@@ -74,8 +74,8 @@ public class TelaRelogioController {
     }
 
     /**
-     * Método responsável por sincronizar seu horário, com os horários dos demais
-     * relógios.
+     * Método responsável por sincronizar seu horário, com os horários dos
+     * demais relógios.
      *
      */
     public void sincronizar() {
@@ -173,18 +173,25 @@ public class TelaRelogioController {
 
                     System.out.println(conexao.getId());
                     System.out.println(conexao.getMestre());
-                    if (conexao.isEleicao() && !conexao.getMestre().equals(conexao.getId())) {
 
+                    if (conexao.isEleicao()) {
                         try {
                             System.out.println("Bullyng");
+                            conexao.setMsgRecebida(false);
+                            conexao.setLiderMenor(false);
                             conexao.enviar("bullying;" + conexao.getId() + ";" + conexao.getMestre() + ";" + getContador());
-                            conexao.setMsgRecebida(true);
                             Thread.sleep(5000);
 
-                            if (conexao.isMsgRecebida()) {
-                                System.out.println("Eleito");
+                            if (!conexao.isMsgRecebida()) { //Líder não recebeu a msg
+                                System.out.println("Questionando o líder");
                                 conexao.enviar("eleicao1;" + conexao.getId() + ";" + getContador());
                             }
+                            if (conexao.isLiderMenor()) {
+                                conexao.setContMestre(contador);
+                                System.out.println("Questionando o líder");
+                                conexao.enviar("eleicao1;" + conexao.getId() + ";" + getContador());
+                            }
+
                         } catch (IOException ex) {
                             Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (InterruptedException ex) {
