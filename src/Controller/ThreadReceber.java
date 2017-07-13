@@ -3,8 +3,6 @@ package Controller;
 import Conexao.Conexao;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -14,7 +12,6 @@ public class ThreadReceber implements Runnable {
 
     private TelaRelogioController relogio;
     private boolean liderBuffer;
-    
 
     public ThreadReceber(TelaRelogioController relogio) {
         this.relogio = relogio;
@@ -25,58 +22,58 @@ public class ThreadReceber implements Runnable {
         Conexao conexao = Conexao.getInstancia();
 
         while (true) {
-  
-          try {
-               String[] comandos = conexao.receber().split(";");
-               System.out.println(comandos[0]);
-               if(comandos.length > 1){
-               if(!comandos[1].equals(conexao.getId())){ //Não responde a mensagens de si mesmo
-                   
-               //Enviar para o mestre pedido de sincronização
-                if(comandos[0].equals("sincronizar1")){
-                    if(conexao.getMestre().equals(conexao.getId())){
-                        conexao.enviar("sincronizar2;" + relogio.getContador() + ";" + relogio.getHora());
+
+            try {
+                String[] comandos = conexao.receber().split(";");
+                System.out.println(comandos[0]);
+                if (comandos.length > 1) {
+                    if (!comandos[1].equals(conexao.getId())) { //Não responde a mensagens de si mesmo
+
+                        //Enviar para o mestre pedido de sincronização
+                        if (comandos[0].equals("sincronizar1")) {
+                            if (conexao.getMestre().equals(conexao.getId())) {
+                                conexao.enviar("sincronizar2;" + relogio.getContador() + ";" + relogio.getHora());
+                            }
+                        }
+                        //Recebendo msg de sincronização
+                        if (comandos[0].equals("sincronizar2")) {
+                            relogio.atualizarTempo(Integer.parseInt(comandos[2]), Integer.parseInt(comandos[1]));
+                        }
+
+                        //Bullynando o lider
+                        if (comandos[0].equals("bullying")) {
+                            System.out.println("Bully");
+                            if (comandos[2].equals(conexao.getId())) {
+                                conexao.setMsgRecebida(false);
+                                System.out.println("Eu sou o líder");
+                                if (Integer.parseInt(comandos[3]) < relogio.getContador()) {
+                                    conexao.setMsgRecebida(true);
+                                }
+                            }
+                        }
+
+                        //Alguem pediu eleição e enviou seu tempo para todos
+                        if (comandos[0].equals("eleicao1")) {
+                            conexao.setMestre(conexao.getId());
+                            conexao.setEleicao(false);
+                            if (Integer.parseInt(comandos[2]) > relogio.getContador()) { //Vê se a hora é maior que a sua
+                                conexao.setMestre(comandos[1]);
+                            }
+                            conexao.enviar("eleicao2;" + conexao.getId() + ";" + relogio.getContador());
+                        }
+                        if (comandos[0].equals("eleicao2")) {
+                            if (Integer.parseInt(comandos[2]) > relogio.getContador()) { //Vê se a hora é maior que a sua
+                                conexao.setMestre(comandos[1]);
+                            }
+                            conexao.enviar("eleicaoFinal");
+                        }
+                        if (comandos[0].equals("eleicaoFinal")) {
+                            System.out.println("O líder é o:" + conexao.getId());
+                            conexao.setEleicao(true);
+                        }
                     }
-                }
-                //Recebendo msg de sincronização
-                if(comandos[0].equals("sincronizar2")){
-                    relogio.atualizarTempo(Integer.parseInt(comandos[2]), Integer.parseInt(comandos[1]));
                 }
 
-                //Bullynando o lider
-                if(comandos[0].equals("bullying")){
-                    System.out.println("Bully");
-                    if(comandos[2].equals(conexao.getId())){
-                        conexao.setMsgRecebida(false);
-                        System.out.println("Eu sou o líder");
-                        if(Integer.parseInt(comandos[3]) < relogio.getContador())
-                            conexao.setMsgRecebida(true);
-                    }
-                }
-
-                //Alguem pediu eleição e enviou seu tempo para todos
-                if(comandos[0].equals("eleicao1")){
-                    conexao.setMestre(conexao.getId());
-                    conexao.setEleicao(false);
-                    if(Integer.parseInt(comandos[2]) > relogio.getContador()){ //Vê se a hora é maior que a sua
-                        conexao.setMestre(comandos[1]);
-                    }
-                    conexao.enviar("eleicao2;" + conexao.getId() + ";" + relogio.getContador());
-                }
-                if(comandos[0].equals("eleicao2")){
-                    if(Integer.parseInt(comandos[2]) > relogio.getContador()){ //Vê se a hora é maior que a sua
-                        conexao.setMestre(comandos[1]);
-                    }
-                    conexao.enviar("eleicaoFinal");
-                }
-                if(comandos[0].equals("eleicaoFinal")){
-                    System.out.println("O líder é o:" + conexao.getId());
-                    conexao.setEleicao(true);
-                }
-               }
-               }
-               
-               
 //
 //                if(comandos[0].equals("entrar")) {
 //                    System.out.println("11111111111111111111111111111111111");
@@ -149,13 +146,10 @@ public class ThreadReceber implements Runnable {
 //
 //                }
             } catch (SocketTimeoutException exception) {
-
-                System.out.println(relogio.getid());
-
+                System.err.println("ERRO" + exception.getMessage());
             } catch (IOException exception) {
-
-                Logger.getLogger(ThreadReceber.class.getName()).log(Level.SEVERE, null, exception);
-           }
+                System.err.println("ERRO" + exception.getMessage());
+            }
         }
     }
 
