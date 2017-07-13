@@ -18,6 +18,34 @@ import java.util.Random;
 public class Conexao{
 
     /**
+     * @return the liderMenor
+     */
+    public boolean isLiderMenor() {
+        return liderMenor;
+    }
+
+    /**
+     * @param liderMenor the liderMenor to set
+     */
+    public void setLiderMenor(boolean liderMenor) {
+        this.liderMenor = liderMenor;
+    }
+
+    /**
+     * @return the contMestre
+     */
+    public int getContMestre() {
+        return contMestre;
+    }
+
+    /**
+     * @param contMestre the contMestre to set
+     */
+    public void setContMestre(int contMestre) {
+        this.contMestre = contMestre;
+    }
+
+    /**
      * @return the eleicao
      */
     public boolean isEleicao() {
@@ -47,12 +75,14 @@ public class Conexao{
 
     private static Conexao Conexao;
     private final int PORTA = 5000;
-    private final String GRUPO = "225.4.5.6";
+    private final String GRUPO = "225.7.2.8";
     private MulticastSocket multicast;
     private String id;
     private String mestre;
     private boolean msgRecebida;
     private boolean eleicao;
+    private int contMestre;
+    private boolean liderMenor;
 
     /**
      * Método que inicializa a classe.
@@ -78,7 +108,8 @@ public class Conexao{
         this.multicast = new MulticastSocket(this.PORTA);
         this.multicast.joinGroup(InetAddress.getByName(this.GRUPO));
         this.eleicao = true;
-        this.msgRecebida = false;
+        this.msgRecebida = true;
+        this.setLiderMenor(false);
         System.out.println("Conectou!");
         //this.multicast.setSoTimeout(2000);
     }
