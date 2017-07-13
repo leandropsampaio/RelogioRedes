@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -68,9 +67,9 @@ public class TelaRelogioController {
                     }
                 }
             }
-        } else {
-            JOptionPane.showMessageDialog(labelMinuto, "Por gentileza, coloque um horário válido...");
         }
+
+        JOptionPane.showMessageDialog(labelMinuto, "Por gentileza, coloque um horário válido...");
     }
 
     /**
@@ -96,10 +95,8 @@ public class TelaRelogioController {
      * Método que libera o evento do botão de alterar drift, que modifica o
      * drift do relógio em tempo de execução.
      *
-     * @param event
      */
-    @FXML
-    void clicaAlterarDrift(ActionEvent event) {
+    public void clicaAlterarDrift(ActionEvent event) {
         String field = fieldDrift.getText();
 
         //Se houver drift:
@@ -130,6 +127,7 @@ public class TelaRelogioController {
         //this.contagem();   //Chama a tarefa
         ThreadReceber tr = new ThreadReceber(this);
         new Thread(tr).start();
+        this.bullying();
     }
 
     /**
@@ -170,19 +168,29 @@ public class TelaRelogioController {
                         setContador((Integer) 0);
                     }
                     labelHora.setText(getHora().toString());
+                }
+            }
+        }.start();
+    }
 
+    public void bullying() {
+        new Thread() {
+
+            @Override
+            public void run() {
+                while (true) {
                     System.out.println(conexao.getId());
                     System.out.println(conexao.getMestre());
+                    if (conexao.isEleicao() && !conexao.getId().equals(conexao.getMestre())) {
 
-                    if (conexao.isEleicao()) {
                         try {
                             System.out.println("Bullyng");
                             conexao.setMsgRecebida(false);
                             conexao.setLiderMenor(false);
                             conexao.enviar("bullying;" + conexao.getId() + ";" + conexao.getMestre() + ";" + getContador());
-                            Thread.sleep(5000);
+                            Thread.sleep(1500);
 
-                            if (!conexao.isMsgRecebida()) { //Líder não recebeu a msg
+                            if (conexao.isMsgRecebida() == false) { //Líder não recebeu a msg
                                 System.out.println("Questionando o líder");
                                 conexao.enviar("eleicao1;" + conexao.getId() + ";" + getContador());
                             }
@@ -191,7 +199,6 @@ public class TelaRelogioController {
                                 System.out.println("Questionando o líder");
                                 conexao.enviar("eleicao1;" + conexao.getId() + ";" + getContador());
                             }
-
                         } catch (IOException ex) {
                             Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
                         } catch (InterruptedException ex) {
@@ -201,8 +208,13 @@ public class TelaRelogioController {
                 }
             }
         }.start();
+
     }
 
+    /**
+     * Método responsável por atualizar o horário.
+     *
+     */
     public void atualizarTempo(Integer hora, Integer contador) {
         this.setHora(hora);
         this.setContador(contador);

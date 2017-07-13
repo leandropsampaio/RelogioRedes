@@ -16,7 +16,6 @@ import java.net.UnknownHostException;
  *
  * @author Leandro Pereira Sampaio
  */
-
 public class Conexao {
 
     private static Conexao Conexao;
@@ -154,7 +153,7 @@ public class Conexao {
     public void setMsgRecebida(boolean msgRecebida) {
         this.msgRecebida = msgRecebida;
     }
-    
+
     /**
      * @return the liderMenor
      */
