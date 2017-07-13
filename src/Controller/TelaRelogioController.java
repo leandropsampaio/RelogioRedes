@@ -162,6 +162,7 @@ public class TelaRelogioController {
         //this.contagem();   //Chama a tarefa
         ThreadReceber tr = new ThreadReceber(this);
         new Thread(tr).start();
+        this.bullying();
     }
 
     public void contagem() {
@@ -197,36 +198,47 @@ public class TelaRelogioController {
                         setContador((Integer) 0);
                     }
                     labelHora.setText(getHora().toString());
-
-                    System.out.println(conexao.getId());
-                    System.out.println(conexao.getMestre());
-                    if (conexao.isEleicao()) {
-
-                        try {
-                                System.out.println("Bullyng");
-                                conexao.setMsgRecebida(false);
-                                conexao.setLiderMenor(false);
-                                conexao.enviar("bullying;" + conexao.getId()+ ";"+ conexao.getMestre() + ";" + getContador());
-                                Thread.sleep(5000);
-                                
-                                if(!conexao.isMsgRecebida()){ //Líder não recebeu a msg
-                                    System.out.println("Questionando o líder");
-                                    conexao.enviar("eleicao1;" + conexao.getId() + ";"+ getContador());
-                                }
-                                if(conexao.isLiderMenor()){
-                                    conexao.setContMestre(contador);
-                                    System.out.println("Questionando o líder");
-                                    conexao.enviar("eleicao1;" + conexao.getId() + ";"+ getContador());
-                                }
-                        } catch (IOException ex) {
-                            Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
                 }
             }
         }.start();
+    }
+    
+    public void bullying() {
+        new Thread() {
+
+            @Override
+            public void run() {
+                while(true){
+                    System.out.println(conexao.getId());
+                        System.out.println(conexao.getMestre());
+                        if (conexao.isEleicao() && !conexao.getId().equals(conexao.getMestre())) {
+
+                            try {
+                                    System.out.println("Bullyng");
+                                    conexao.setMsgRecebida(false);
+                                    conexao.setLiderMenor(false);
+                                    conexao.enviar("bullying;" + conexao.getId()+ ";"+ conexao.getMestre() + ";" + getContador());
+                                    Thread.sleep(1500);
+
+                                    if(conexao.isMsgRecebida() == false){ //Líder não recebeu a msg
+                                        System.out.println("Questionando o líder");
+                                        conexao.enviar("eleicao1;" + conexao.getId() + ";"+ getContador());
+                                    }
+                                    if(conexao.isLiderMenor()){
+                                        conexao.setContMestre(contador);
+                                        System.out.println("Questionando o líder");
+                                        conexao.enviar("eleicao1;" + conexao.getId() + ";"+ getContador());
+                                    }
+                            } catch (IOException ex) {
+                                Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                }
+            }
+        }.start();
+    
     }
 
     public void atualizarTempo(Integer hora, Integer contador) {
