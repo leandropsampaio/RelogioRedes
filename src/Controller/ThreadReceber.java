@@ -2,11 +2,12 @@ package Controller;
 
 import Conexao.Conexao;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Classe ThreadReceber, thread responsável por receber as mensagens enviadas
+ * pelos outros relógios.
  *
  * @author Leandro Pereira Sampaio
  */
@@ -19,7 +20,8 @@ public class ThreadReceber implements Runnable {
     }
 
     @Override
-    /***
+    /**
+     * *
      * Respostas aos protocolos recebidos
      */
     public void run() {
@@ -55,7 +57,7 @@ public class ThreadReceber implements Runnable {
                         
                         
                         //Bullynando o lider
-                        if(comandos[0].equals("bullying")){
+                        if (comandos[0].equals("bullying")) {
                             System.out.println("Bully");
                             if(comandos[2].equals(conexao.getId())){
                                 conexao.enviar("msgrecebida;" + conexao.getId() + ";" + relogio.getContador() + ";" + relogio.getHora());
@@ -70,19 +72,19 @@ public class ThreadReceber implements Runnable {
                          }
 
                         //Alguem pediu eleição e enviou seu tempo para todos
-                        if(comandos[0].equals("eleicao1")){
-                                conexao.setMestre(conexao.getId());
-                            if(relogio.getContador() > conexao.getContMestre()){
+                        if (comandos[0].equals("eleicao1")) {
+                            conexao.setMestre(conexao.getId());
+                            if (relogio.getContador() > conexao.getContMestre()) {
                                 conexao.setContMestre(relogio.getContador());
                             }
                             conexao.setEleicao(false);
-                            if(Integer.parseInt(comandos[2]) > conexao.getContMestre()){ //Vê se a hora é maior que a sua
+                            if (Integer.parseInt(comandos[2]) > conexao.getContMestre()) { //Vê se a hora é maior que a sua
                                 conexao.setMestre(comandos[1]);
                             }
                             conexao.enviar("eleicao2;" + conexao.getId() + ";" + relogio.getContador() + ";" + relogio.getHora());
                         }
-                        if(comandos[0].equals("eleicao2")){
-                            if(Integer.parseInt(comandos[2]) > conexao.getContMestre()){ //Vê se a hora é maior que a sua
+                        if (comandos[0].equals("eleicao2")) {
+                            if (Integer.parseInt(comandos[2]) > conexao.getContMestre()) { //Vê se a hora é maior que a sua
                                 conexao.setMestre(comandos[1]);
                             }
                             conexao.enviar("eleicaoFinal;" + conexao.getId());
@@ -106,8 +108,7 @@ public class ThreadReceber implements Runnable {
           } catch (IOException ex) {
                 Logger.getLogger(ThreadReceber.class.getName()).log(Level.SEVERE, null, ex);
             }
-               
-               
+
 //
 //                if(comandos[0].equals("entrar")) {
 //                    System.out.println("11111111111111111111111111111111111");
@@ -178,5 +179,5 @@ public class ThreadReceber implements Runnable {
 //                        this.relogio.atualizarTempo(Integer.parseInt(comandos[2]), Integer.parseInt(comandos[3]));
 //                    }
         }
-}
+    }
 }

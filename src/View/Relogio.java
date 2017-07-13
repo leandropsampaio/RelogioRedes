@@ -9,26 +9,24 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
+ * Classe Relogio, responsável pela inicialização dos elementos da interface
+ * gráfica.
  *
  * @author Leandro Pereira Sampaio
  */
 public class Relogio extends javax.swing.JFrame {
 
-    private Thread thController;
     private TelaRelogioController controller;
 
     /**
-     * Creates new form Relogio
+     * Inicializar a a interface gráfica.
      */
     public Relogio() {
         initComponents();
+        setIcon();
 
         iniciarConexao();
-
-        setIcon();
         mostrarHora();
-        //buttonPlay.setUI(new MetalButtonUI());
-        //buttonPause.setUI(new MetalButtonUI());
     }
 
     /**
@@ -220,18 +218,9 @@ public class Relogio extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     /**
-     * Método responsável por alterar o ícone do frame.
+     * Método responsável por iniciar a conexão do relógio.
      *
      */
-    private void setIcon() {
-        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Imagens/icone_relogio.png")));
-    }
-
-    public void mostrarHora() {
-        controller = new TelaRelogioController(labelHora, labelMinuto, labelSegundo);
-        controller.iniciar();
-    }
-
     private void iniciarConexao() {
         try {
             Conexao.singleton();   //Cria a conexão
@@ -247,7 +236,23 @@ public class Relogio extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(Relogio.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
 
+    /**
+     * Método responsável por alterar o ícone do frame.
+     *
+     */
+    private void setIcon() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Imagens/icone_relogio.png")));
+    }
+
+    /**
+     * Método responsável por inicializar a contagem do relógio.
+     *
+     */
+    public void mostrarHora() {
+        controller = new TelaRelogioController(labelHora, labelMinuto, labelSegundo);
+        controller.iniciar();
     }
 
 }

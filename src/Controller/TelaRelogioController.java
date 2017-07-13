@@ -3,64 +3,27 @@ package Controller;
 import Conexao.Conexao;
 
 import java.io.IOException;
-import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.fxml.Initializable;
-import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /**
- * Classe controladora TelaRelogioController, responsável pela configuração dos
- * elementos da interface do relógio.
+ * Classe controladora TelaRelogioController, responsável pela implementação dos
+ * métodos da interface gráfica.
  *
  * @author Leandro Pereira Sampaio
  */
 public class TelaRelogioController {
 
-    /**
-     * @return the hora
-     */
-    public Integer getHora() {
-        return hora;
-    }
-
-    /**
-     * @param hora the hora to set
-     */
-    public void setHora(Integer hora) {
-        this.hora = hora;
-    }
-
-    /**
-     * @return the contador
-     */
-    public Integer getContador() {
-        return contador;
-    }
-
-    /**
-     * @param contador the contador to set
-     */
-    public void setContador(Integer contador) {
-        this.contador = contador;
-    }
-
     private TextField fieldDrift;
-    private JLabel labelAlteraMinuto;
     private JLabel labelHora;
     private JLabel labelMinuto;
-    private JLabel labelAlteraHora;
     private JLabel labelSegundo;
-    private JLabel labelAlteraSegundo;
     private int drift = 1000;
     private Integer id = 0, contador = 0, segundo = 0, minuto = 0, hora = 0;
     private Conexao conexao = Conexao.getInstancia();
@@ -72,10 +35,9 @@ public class TelaRelogioController {
     }
 
     /**
-     * Método que libera o evento do botão de alterar tempo, que modifica o
-     * horário do relógio em tempo de execução.
+     * Método responsável por modificar o horário do relógio em tempo de
+     * execução.
      *
-     * @param event
      */
     public void alterarTempo(JFormattedTextField novoHorario) {
         System.out.println("NOVO HORÁRIO: " + novoHorario.getText());
@@ -106,10 +68,14 @@ public class TelaRelogioController {
                 }
             }
         }
-        
+
         JOptionPane.showMessageDialog(labelMinuto, "Por gentileza, coloque um horário válido...");
     }
-    
+    /**
+     * Método responsável por sincronizar seu horário, com os horários dos
+     * demais relógios.
+     *
+     */    
     public void sincronizar(){
            try {
                if(conexao.getMestre().equals(conexao.getId())){
@@ -129,10 +95,8 @@ public class TelaRelogioController {
      * Método que libera o evento do botão de alterar drift, que modifica o
      * drift do relógio em tempo de execução.
      *
-     * @param event
      */
-    @FXML
-    void clicaAlterarDrift(ActionEvent event) {
+    public void clicaAlterarDrift(ActionEvent event) {
         String field = fieldDrift.getText();
 
         //Se houver drift:
@@ -142,7 +106,8 @@ public class TelaRelogioController {
     }
 
     /**
-     * Método inicial de carregamento da tela.
+     * Método responsável por inicializar a contagem e criar criar uma Thread
+     * para recebimento de mensagens.
      *
      */
     public void iniciar() {
@@ -165,6 +130,11 @@ public class TelaRelogioController {
         this.bullying();
     }
 
+    /**
+     * Método responsável por fazer a contagem e incrementar nas variáveis do
+     * relógio.
+     *
+     */
     public void contagem() {
         new Thread() {
 
@@ -202,13 +172,13 @@ public class TelaRelogioController {
             }
         }.start();
     }
-    
+
     public void bullying() {
         new Thread() {
 
             @Override
             public void run() {
-                while(true){
+                while (true) {
                     System.out.println(conexao.getId());
                         System.out.println(conexao.getMestre());
                         if (conexao.isEleicao()) {
@@ -236,12 +206,15 @@ public class TelaRelogioController {
                                 Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
+                    }
                 }
-            }
+            
         }.start();
-    
     }
-
+    /**
+     * Método responsável por atualizar o horário.
+     *
+     */
     public void atualizarTempo(Integer hora, Integer contador) {
         this.setHora(hora);
         this.setContador(contador);
@@ -266,10 +239,50 @@ public class TelaRelogioController {
         labelHora.setText(hora.toString());
     }
 
+    /**
+     * Método responsável por retornar a hora.
+     *
+     */
+    public Integer getHora() {
+        return hora;
+    }
+
+    /**
+     * Método responsável por adicionar a hora.
+     *
+     */
+    public void setHora(Integer hora) {
+        this.hora = hora;
+    }
+
+    /**
+     * Método responsável por retornar o contador de tempo.
+     *
+     */
+    public Integer getContador() {
+        return contador;
+    }
+
+    /**
+     * Método responsável por adicionar um valor ao contador.
+     *
+     */
+    public void setContador(Integer contador) {
+        this.contador = contador;
+    }
+
+    /**
+     * Método responsável por retornar o id.
+     *
+     */
     public Integer getid() {
         return id;
     }
 
+    /**
+     * Método responsável por adicionar um valor ao id.
+     *
+     */
     public void setId(int id) {
         this.id = id;
     }

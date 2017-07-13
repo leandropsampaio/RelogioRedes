@@ -9,69 +9,14 @@ import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.Random;
 
 /**
+ * Classe conexão, responsável pela implementação dos métodos de conexão dos
+ * relógios.
  *
  * @author Leandro Pereira Sampaio
  */
-public class Conexao{
-
-    /**
-     * @return the liderMenor
-     */
-    public boolean isLiderMenor() {
-        return liderMenor;
-    }
-
-    /**
-     * @param liderMenor the liderMenor to set
-     */
-    public void setLiderMenor(boolean liderMenor) {
-        this.liderMenor = liderMenor;
-    }
-
-    /**
-     * @return the contMestre
-     */
-    public int getContMestre() {
-        return contMestre;
-    }
-
-    /**
-     * @param contMestre the contMestre to set
-     */
-    public void setContMestre(int contMestre) {
-        this.contMestre = contMestre;
-    }
-
-    /**
-     * @return the eleicao
-     */
-    public boolean isEleicao() {
-        return eleicao;
-    }
-
-    /**
-     * @param eleicao the eleicao to set
-     */
-    public void setEleicao(boolean eleicao) {
-        this.eleicao = eleicao;
-    }
-
-    /**
-     * @return the msgRecebida
-     */
-    public boolean isMsgRecebida() {
-        return msgRecebida;
-    }
-
-    /**
-     * @param msgRecebida the msgRecebida to set
-     */
-    public void setMsgRecebida(boolean msgRecebida) {
-        this.msgRecebida = msgRecebida;
-    }
+public class Conexao {
 
     private static Conexao Conexao;
     private final int PORTA = 5000;
@@ -101,7 +46,7 @@ public class Conexao{
     }
 
     /**
-     * Método que conecta ao grupo.
+     * Método responsável por conectar o grupo.
      *
      */
     public void conectar() throws IOException {
@@ -115,7 +60,7 @@ public class Conexao{
     }
 
     /**
-     * Método que desconecta do grupo.
+     * Método responsável por desconectar o grupo.
      *
      */
     public void desconectar() throws IOException {
@@ -123,7 +68,10 @@ public class Conexao{
         this.multicast.close();
     }
 
-
+    /**
+     * Método responsável por enviar uma mensagem para o grupo.
+     *
+     */
     public void enviar(String s) throws SocketException, UnknownHostException, IOException {
         DatagramSocket socket = new DatagramSocket();
         byte[] buf = s.getBytes();
@@ -132,7 +80,7 @@ public class Conexao{
     }
 
     /**
-     * Método que recebe uma string do grupo e a retorna.
+     * Método que recebe uma mensagem do grupo e a retorna.
      *
      */
     public String receber() throws IOException, SocketTimeoutException {
@@ -142,20 +90,95 @@ public class Conexao{
         return (new String(pack.getData()).trim());
     }
 
+    /**
+     * Método que retorna o servidor de referência.
+     *
+     */
     public String getMestre() {
         return mestre;
     }
 
+    /**
+     * Método que adiciona o servidor de referência.
+     *
+     */
     public void setMestre(String mestre) {
         this.mestre = mestre;
     }
 
+    /**
+     * Método que retorna o id do relógio.
+     *
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Método que adiciona o id para o relógio.
+     *
+     */
     public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Método que retorna se está ocorrendo uma eleição.
+     *
+     */
+    public boolean isEleicao() {
+        return eleicao;
+    }
+
+    /**
+     * Método que altera a variável eleição.
+     *
+     */
+    public void setEleicao(boolean eleicao) {
+        this.eleicao = eleicao;
+    }
+
+    /**
+     * Método que retorna se a mensagem foi recebida.
+     *
+     */
+    public boolean isMsgRecebida() {
+        return msgRecebida;
+    }
+
+    /**
+     * Método que altera a variável de mensagem recebida.
+     *
+     */
+    public void setMsgRecebida(boolean msgRecebida) {
+        this.msgRecebida = msgRecebida;
+    }
+
+    /**
+     * @return the liderMenor
+     */
+    public boolean isLiderMenor() {
+        return liderMenor;
+    }
+
+    /**
+     * @param liderMenor the liderMenor to set
+     */
+    public void setLiderMenor(boolean liderMenor) {
+        this.liderMenor = liderMenor;
+    }
+
+    /**
+     * @return the contMestre
+     */
+    public int getContMestre() {
+        return contMestre;
+    }
+
+    /**
+     * @param contMestre the contMestre to set
+     */
+    public void setContMestre(int contMestre) {
+        this.contMestre = contMestre;
+    }
 }
