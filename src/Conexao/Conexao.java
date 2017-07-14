@@ -18,6 +18,20 @@ import java.net.UnknownHostException;
  */
 public class Conexao {
 
+    /**
+     * @return the horasMestre
+     */
+    public int getHorasMestre() {
+        return horasMestre;
+    }
+
+    /**
+     * @param horasMestre the horasMestre to set
+     */
+    public void setHorasMestre(int horasMestre) {
+        this.horasMestre = horasMestre;
+    }
+
     private static Conexao Conexao;
     private final int PORTA = 5000;
     private final String GRUPO = "225.7.2.8";
@@ -28,6 +42,7 @@ public class Conexao {
     private boolean eleicao;
     private int contMestre;
     private boolean liderMenor;
+    private int horasMestre;
 
     /**
      * Método que inicializa a classe.
@@ -54,13 +69,15 @@ public class Conexao {
         this.multicast.joinGroup(InetAddress.getByName(this.GRUPO));
         this.eleicao = true;
         this.msgRecebida = true;
+        this.horasMestre = 0;
+        this.contMestre = 0;
         this.setLiderMenor(false);
         System.out.println("Conectou!");
         //this.multicast.setSoTimeout(2000);
     }
 
     /**
-     * Método responsável por desconectar o grupo.
+     * Método responsável por desconectar do grupo.
      *
      */
     public void desconectar() throws IOException {

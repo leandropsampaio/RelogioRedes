@@ -4,6 +4,7 @@ import Conexao.Conexao;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -11,6 +12,8 @@ import javafx.scene.control.TextField;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Classe controladora TelaRelogioController, responsável pela implementação dos
@@ -20,18 +23,44 @@ import javax.swing.JOptionPane;
  */
 public class TelaRelogioController {
 
-    private TextField fieldDrift;
+    /**
+     * @return the delays
+     */
+    public int[] getDelays() {
+        return delays;
+    }
+
+    /**
+     * @param delays the delays to set
+     */
+    public void setDelays(int[] delays) {
+        this.delays = delays;
+    }
+    
+    private Timer timer;
     private JLabel labelHora;
     private JLabel labelMinuto;
     private JLabel labelSegundo;
+    private Date tempo;
+    private long delay;
     private int drift = 1000;
-    private Integer id = 0, contador = 0, segundo = 0, minuto = 0, hora = 0;
+    private int id, contador, segundo, minuto, hora;
+    private int[] delays;
     private Conexao conexao = Conexao.getInstancia();
 
     public TelaRelogioController(JLabel labelHora, JLabel labelMinuto, JLabel labelSegundo) {
         this.labelHora = labelHora;
         this.labelMinuto = labelMinuto;
         this.labelSegundo = labelSegundo;
+        this.id = 0;
+        this.contador = 0;
+        this.segundo = 0;
+        this.minuto = 0;
+        this.hora = 0;
+        this.delay = 0;
+        this.delays = new int[100];
+        this.timer = new Timer();
+        this.tempo = new Date();
     }
 
     /**
@@ -71,24 +100,24 @@ public class TelaRelogioController {
 
         JOptionPane.showMessageDialog(labelMinuto, "Por gentileza, coloque um horário válido...");
     }
+
     /**
      * Método responsável por sincronizar seu horário, com os horários dos
      * demais relógios.
      *
-     */    
-    public void sincronizar(){
-           try {
-               if(conexao.getMestre().equals(conexao.getId())){
-                   conexao.enviar("sincronizar2;" + this.contador+ ";" + this.hora);
-               }
-               else{
-                   conexao.enviar("sincronizar1;" +conexao.getId());
-               }
-           } catch (UnknownHostException ex) {
-               Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
-           } catch (IOException ex) {
-               Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
-           }
+     */
+    public void sincronizar() {
+        try {
+            if (conexao.getMestre().equals(conexao.getId())) {
+                conexao.enviar("sincronizar2;" + this.id + ";" + this.contador + ";" + this.hora);
+            } else {
+                conexao.enviar("sincronizar1;" + conexao.getId());
+            }
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -96,8 +125,8 @@ public class TelaRelogioController {
      * drift do relógio em tempo de execução.
      *
      */
-    public void clicaAlterarDrift(ActionEvent event) {
-        String field = fieldDrift.getText();
+    public void clicaAlterarDrift(String driftRecebido) {
+        String field = driftRecebido;
 
         //Se houver drift:
         if ((!(field.equals(""))) && (!(field.equals(" "))) && (!(field.equals("0")))) {
@@ -150,13 +179,13 @@ public class TelaRelogioController {
 
                     setContador((Integer) (getContador() + 1));   //Variável de controle do tempo
                     segundo = getContador() % 60;
-                    labelSegundo.setText(segundo.toString());
+                    labelSegundo.setText(String.valueOf(segundo));
                     minuto = getContador() / 60;
 
                     if (minuto == 60) {
                         minuto = 0;
                     }
-                    labelMinuto.setText(minuto.toString());
+                    labelMinuto.setText(String.valueOf(minuto));
 
                     if ((getHora() == 23) && (getContador() == 3600)) {   //Final do dia, reinicia toda contagem
                         setHora((Integer) 0);
@@ -167,7 +196,7 @@ public class TelaRelogioController {
                         setHora((Integer) (getHora() + 1));
                         setContador((Integer) 0);
                     }
-                    labelHora.setText(getHora().toString());
+                    labelHora.setText(String.valueOf(hora));
                 }
             }
         }.start();
@@ -180,52 +209,70 @@ public class TelaRelogioController {
             public void run() {
                 while (true) {
                     System.out.println(conexao.getId());
-                        System.out.println(conexao.getMestre());
-                        if (conexao.isEleicao()) {
-
-                            try {
-                                    System.out.println("Bullyng");
-                                    conexao.setMsgRecebida(false);
-                                    conexao.setLiderMenor(false);
-                                    conexao.enviar("bullying;" + conexao.getId()+ ";"+ conexao.getMestre() + ";" + getContador());
-                                    Thread.sleep(1500);
-
-                                    if(conexao.isMsgRecebida() == false && conexao.getMestre().equals(conexao.getId()) == false){ //Líder não recebeu a msg
-                                        conexao.setContMestre(contador);
-                                        System.out.println("Questionando o líder");
-                                        conexao.enviar("eleicao1;" + conexao.getId() + ";"+ getContador());
-                                    }
-                                    if(conexao.isLiderMenor()){
-                                        conexao.setContMestre(contador);
-                                        System.out.println("Questionando o líder");
-                                        conexao.enviar("eleicao1;" + conexao.getId() + ";"+ getContador());
-                                    }
-                            } catch (IOException ex) {
-                                Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (InterruptedException ex) {
-                                Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println(conexao.getMestre());
+                    if (conexao.isEleicao()) {
+                        try {
+                            System.out.println("Bullyng");
+                            conexao.setMsgRecebida(false);
+                            conexao.setLiderMenor(false);
+                            
+                                                        
+                            //Testando tempo de atraso
+                            if(!conexao.getMestre().equals("9123213")){
+                                delay = tempo.getTime();
                             }
+                            
+                            conexao.enviar("bullying;" + conexao.getId() + ";" + conexao.getMestre() + ";" + getContador() + ";" + getHora());
+                            
+                            Thread.sleep(200);
+                            
+                            if(conexao.isMsgRecebida() && !conexao.getMestre().equals("9123213")){
+                                long temp = tempo.getTime();
+                                delay = (delay - temp)/2;
+                                getDelays()[Integer.parseInt(conexao.getMestre())] = (int) delay;
+                                System.out.println("Tempo de atraso: " + delay);
+                            }
+                            
+                            if (conexao.isMsgRecebida() == false && conexao.getMestre().equals(conexao.getId()) == false) { //Líder não recebeu a msg
+                                conexao.setHorasMestre(getHora());
+                                conexao.setContMestre(contador);
+                                System.out.println("Questionando o líder");
+                                conexao.enviar("eleicao1;" + conexao.getId() + ";" + getContador() + ";" + getHora());
+                            }
+                            
+                            if (conexao.isLiderMenor()) {
+                                conexao.setHorasMestre(getHora());
+                                conexao.setContMestre(contador);
+                                System.out.println("Questionando o líder");
+                                conexao.enviar("eleicao1;" + conexao.getId() + ";" + getContador() + ";" + getHora());
+                            }
+                        } catch (IOException ex) {
+                            Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(TelaRelogioController.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }
-            
+            }
+
         }.start();
     }
+
     /**
      * Método responsável por atualizar o horário.
      *
      */
-    public void atualizarTempo(Integer hora, Integer contador) {
+    public void atualizarTempo(int hora, int contador) {
         this.setHora(hora);
         this.setContador(contador);
         segundo = contador % 60;
-        labelSegundo.setText(segundo.toString());
+        labelSegundo.setText(String.valueOf(segundo));
         minuto = contador / 60;
 
         if (minuto == 60) {
             minuto = 0;
         }
-        labelMinuto.setText(minuto.toString());
+        labelMinuto.setText(String.valueOf(minuto));
 
         if ((hora == 23) && (contador == 3600)) {   //Final do dia, reinicia toda contagem
             hora = 0;
@@ -236,14 +283,14 @@ public class TelaRelogioController {
             hora++;
             contador = 0;
         }
-        labelHora.setText(hora.toString());
+        labelHora.setText(String.valueOf(hora));
     }
 
     /**
      * Método responsável por retornar a hora.
      *
      */
-    public Integer getHora() {
+    public int getHora() {
         return hora;
     }
 
@@ -251,7 +298,7 @@ public class TelaRelogioController {
      * Método responsável por adicionar a hora.
      *
      */
-    public void setHora(Integer hora) {
+    public void setHora(int hora) {
         this.hora = hora;
     }
 
@@ -259,7 +306,7 @@ public class TelaRelogioController {
      * Método responsável por retornar o contador de tempo.
      *
      */
-    public Integer getContador() {
+    public int getContador() {
         return contador;
     }
 
@@ -267,7 +314,7 @@ public class TelaRelogioController {
      * Método responsável por adicionar um valor ao contador.
      *
      */
-    public void setContador(Integer contador) {
+    public void setContador(int contador) {
         this.contador = contador;
     }
 
@@ -275,7 +322,7 @@ public class TelaRelogioController {
      * Método responsável por retornar o id.
      *
      */
-    public Integer getid() {
+    public int getid() {
         return id;
     }
 
