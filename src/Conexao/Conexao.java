@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
  * Classe conexão, responsável pela implementação dos métodos de conexão dos
  * relógios.
  *
- * @author Leandro Pereira Sampaio
+ * @author Leandro Pereira Sampaio e Bernardo Rosa
  */
 public class Conexao {
 

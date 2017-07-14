@@ -9,7 +9,7 @@ import java.util.logging.Logger;
  * Classe ThreadReceber, thread responsável por receber as mensagens enviadas
  * pelos outros relógios.
  *
- * @author Leandro Pereira Sampaio
+ * @author Leandro Pereira Sampaio e Bernardo Rosa
  */
 public class ThreadReceber implements Runnable {
 

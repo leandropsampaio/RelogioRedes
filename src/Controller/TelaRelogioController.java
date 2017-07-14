@@ -16,8 +16,8 @@ import java.util.Timer;
  * Classe controladora TelaRelogioController, responsável pela implementação dos
  * métodos da interface gráfica.
  *
- * @author Leandro Pereira Sampaio
- */
+ * @author Leandro Pereira Sampaio e Bernardo Rosa
+ */ 
 public class TelaRelogioController {
 
     /**

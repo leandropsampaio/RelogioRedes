@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  * Classe Relogio, responsável pela inicialização dos elementos da interface
  * gráfica.
  *
- * @author Leandro Pereira Sampaio
+ * @author Leandro Pereira Sampaio e Bernardo Rosa
  */
 public class Relogio extends javax.swing.JFrame {
     
