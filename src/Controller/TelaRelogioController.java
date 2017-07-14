@@ -212,7 +212,7 @@ public class TelaRelogioController {
     }
 
     /**
-     * Método responsável por atualizar o horário.
+     * Método responsável por atualizar as variáveis do horário.
      *
      */
     public void atualizarTempo(Integer hora, Integer contador) {
@@ -234,7 +234,6 @@ public class TelaRelogioController {
 
         if (contador == 3600) {   //Final da hora, incrementa a hora
             hora++;
-            contador = 0;
         }
         labelHora.setText(hora.toString());
     }
